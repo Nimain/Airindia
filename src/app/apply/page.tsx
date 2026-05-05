@@ -117,7 +117,7 @@ export default function ApplyPage() {
               fontSize: '11px', fontWeight: 700, color: '#B8952A',
               border: '1px solid #B8952A', padding: '5px 12px', borderRadius: '20px'
             }}>
-              🔒 SECURE FORM
+              🔒
             </span>
           </div>
 
@@ -375,7 +375,7 @@ export default function ApplyPage() {
               <span style={{ color: '#C8102E', fontWeight: 900, fontSize: '18px', lineHeight: 1 }}> /</span>
             </div>
             <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '12px' }}>
-              © 2024 Air India Limited. All rights reserved. Member of Star Alliance.
+              © 2026 Air India Limited. All rights reserved. Member of Star Alliance.
             </div>
           </div>
 

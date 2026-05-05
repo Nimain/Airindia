@@ -92,7 +92,7 @@ export default function GlobalNetworkPage() {
           flexWrap: 'wrap', gap: '12px'
         }}>
           <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '12px' }}>
-            © 2024 Air India Limited. All rights reserved.
+            © 2026 Air India Limited. All rights reserved.
           </div>
           <div style={{ display: 'flex', gap: '24px' }}>
             {['Privacy Policy', 'Conditions of Carriage', 'Contact Hub'].map(link => (

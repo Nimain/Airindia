@@ -42,10 +42,12 @@ export default function Navbar() {
 
         {/* Right side */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link href="/status" style={{ textDecoration: 'none' }}>
-            <button className="btn-primary" style={{ padding: '8px 20px', fontSize: '13px', background: '#1A2B6D' }}>
-              Check Status
-            </button>
+          <Link
+            href="/status"
+            className="btn-primary"
+            style={{ padding: '8px 20px', fontSize: '13px', background: '#1A2B6D', textDecoration: 'none' }}
+          >
+            Check Status
           </Link>
         </div>
       </div>

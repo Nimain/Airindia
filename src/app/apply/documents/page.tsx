@@ -21,27 +21,27 @@ interface DocCard {
 
 const INITIAL_DOCS: DocCard[] = [
   {
-    id: 'passport',
-    doc_type: 'passport',
-    icon: '✈',
-    title: 'Passport Identity Page',
-    description: 'Clear color scan of the personal information page. Validity must exceed 6 months.',
+    id: 'aadhaar',
+    doc_type: 'aadhaar',
+    icon: '🪪',
+    title: 'Aadhaar Card / Passport',
+    description: 'Clear color scan of your Aadhaar card (front side) or Passport identity page.',
     status: 'pending',
   },
   {
-    id: 'certificate',
-    doc_type: 'certificate',
-    icon: '🏥',
-    title: 'Medical Class I Certificate',
-    description: 'Required for Pilot and Cabin Crew streams. Must be issued by a DGCA approved examiner.',
+    id: '10th',
+    doc_type: '10th',
+    icon: '📄',
+    title: '10th Marksheet / Certificate',
+    description: 'Secondary School Certificate or SSLC marksheet issued by your Board of Education.',
     status: 'pending',
   },
   {
-    id: 'marksheet',
-    doc_type: 'marksheet',
+    id: '12th',
+    doc_type: '12th',
     icon: '📋',
-    title: 'Flight License / MRO Training',
-    description: 'Proof of existing basic maintenance training or CPL/ATPL licenses for experienced tracks.',
+    title: '12th Marksheet / Certificate',
+    description: 'Higher Secondary or Intermediate certificate issued by your Board of Education.',
     status: 'pending',
   },
 ];
@@ -85,8 +85,8 @@ export default function DocumentsPage() {
           errorMsg: data.detail || data.message || 'Upload failed',
         } : d));
       } else {
-        const aiStatus = data.ai_status || data.status || 'uploaded';
-        const aiMsg = data.message || '';
+        const aiStatus = data.ai_result?.status || 'uploaded';
+        const aiMsg = data.ai_result?.message || '';
         setDocs(prev => prev.map(d => d.id === docId ? {
           ...d,
           status: aiStatus === 'rejected' ? 'error' : 'uploaded',

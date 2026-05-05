@@ -187,7 +187,7 @@ function StatusContent() {
                             <div style={{ fontSize: '13px', color: '#64748B', marginBottom: '6px' }}>{doc.message}</div>
                           )}
                           <div style={{ display: 'flex', gap: '16px', fontSize: '12px', color: '#94A3B8' }}>
-                            <span>AI Confidence: <strong style={{ color: '#1A2B6D' }}>{doc.confidence?.toFixed(1)}%</strong></span>
+                            {/* <span>AI Confidence: <strong style={{ color: '#1A2B6D' }}>{doc.confidence?.toFixed(1)}%</strong></span> */}
                             <span>Verified: {new Date(doc.verified_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                           </div>
                         </div>

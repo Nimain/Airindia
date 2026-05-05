@@ -33,6 +33,7 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   rejected: { bg: '#FFF1F2', color: '#C8102E' },
   pending: { bg: '#FEF3C7', color: '#B8952A' },
   completed: { bg: '#EEF2FF', color: '#1A2B6D' },
+  documents_uploaded:  { bg: '#F0F9FF', color: '#0369A1' },
 };
 
 export default function AdminPage() {
@@ -101,11 +102,15 @@ export default function AdminPage() {
   });
 
   const counts = {
-    total: candidates.length,
-    approved: candidates.filter(c => c.overall_status === 'approved').length,
-    rejected: candidates.filter(c => c.overall_status === 'rejected').length,
-    pending: candidates.filter(c => c.overall_status === 'pending' || c.overall_status === 'completed').length,
-  };
+      total:    candidates.length,
+      approved: candidates.filter(c => c.overall_status === 'approved').length,
+      rejected: candidates.filter(c => c.overall_status === 'rejected').length,
+      pending:  candidates.filter(c =>
+        c.overall_status === 'pending' ||
+        c.overall_status === 'completed' ||
+        c.overall_status === 'documents_uploaded'
+      ).length,
+    };
 
   return (
     <div style={{ minHeight: '100vh', background: '#F5F7FA' }}>
@@ -118,9 +123,14 @@ export default function AdminPage() {
             <h1 style={{ fontSize: '34px', fontWeight: 900, color: '#1A2B6D', margin: '8px 0 6px' }}>All Candidates</h1>
             <p style={{ color: '#64748B', fontSize: '14px' }}>Review, approve or reject admission applications.</p>
           </div>
-          <button className="btn-ghost" onClick={fetchCandidates} style={{ alignSelf: 'flex-start' }}>
-            ↻ Refresh
-          </button>
+          <button
+              className="btn-ghost"
+              onClick={fetchCandidates}
+              style={{ alignSelf: 'flex-start' }}
+              suppressHydrationWarning
+            >
+              ↻ Refresh
+            </button>
         </div>
 
         {/* Stats */}
@@ -146,15 +156,29 @@ export default function AdminPage() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             style={{ maxWidth: '300px' }}
+            suppressHydrationWarning
           />
-          <select className="form-input" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ maxWidth: '160px' }}>
+          <select
+            className="form-input"
+            value={filterStatus}
+            onChange={e => setFilterStatus(e.target.value)}
+            style={{ maxWidth: '160px' }}
+            suppressHydrationWarning
+          >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
+            <option value="documents_uploaded">Docs Uploaded</option>
             <option value="completed">Completed</option>
             <option value="approved">Approved</option>
             <option value="rejected">Rejected</option>
           </select>
-          <select className="form-input" value={filterStream} onChange={e => setFilterStream(e.target.value)} style={{ maxWidth: '160px' }}>
+          <select
+              className="form-input"
+              value={filterStream}
+              onChange={e => setFilterStream(e.target.value)}
+              style={{ maxWidth: '160px' }}
+              suppressHydrationWarning
+            >
             <option value="all">All Streams</option>
             <option value="PILOT_CADET">Pilot Cadet</option>
             <option value="TECH_MRO">Tech MRO</option>
@@ -193,7 +217,7 @@ export default function AdminPage() {
                   {filtered.map((c, i) => {
                     const sc = STATUS_COLORS[c.overall_status] || STATUS_COLORS.pending;
                     return (
-                      <tr key={c.student_id} style={{
+                      <tr key={`${c.student_id}-${i}`} style={{
                         borderBottom: '1px solid #F1F5F9',
                         background: selected?.student_id === c.student_id ? '#EEF2FF' : i % 2 === 0 ? 'white' : '#FAFAFA',
                         transition: 'background 0.15s'

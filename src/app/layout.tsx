@@ -16,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.variable} style={{ fontFamily: "var(--font-inter, 'Inter', sans-serif)" }}>
+      <body
+        className={inter.variable}
+        style={{ fontFamily: "var(--font-inter, 'Inter', sans-serif)" }}
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>
