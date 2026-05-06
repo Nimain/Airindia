@@ -29,23 +29,29 @@ interface Candidate {
   updated_at?: string;
   // Documents
   documents?: {
-    total?: number;
-    list?: Array<{
-      doc_type: string;
-      file_name: string;
-      status: string;
-      confidence: number;
-      message: string;
-      verified_at: string;
-    }>;
-  } | Array<{
+  total?: number;
+  approved?: number;
+  rejected?: number;
+  list?: Array<{
     doc_type: string;
     file_name: string;
+    file_url?: string | null;
     status: string;
-    confidence: number;
+    confidence?: number;
+    doc_type_detected?: string | null;
     message: string;
     verified_at: string;
   }>;
+} | Array<{
+  doc_type: string;
+  file_name: string;
+  file_url?: string | null;
+  status: string;
+  confidence?: number;
+  doc_type_detected?: string | null;
+  message: string;
+  verified_at: string;
+}>;
   [key: string]: unknown;
 }
 
@@ -429,7 +435,7 @@ export default function AdminPage() {
                     return docList.length > 0 && (
                       <div style={{ marginBottom: '16px' }}>
                         <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>📁 Documents</div>
-                        {(docList as Array<{doc_type: string; file_name: string; status: string; confidence: number; message: string; verified_at: string}>).map((doc, i) => {
+                        {(docList as Array<{doc_type: string; file_name: string; file_url?: string | null; status: string; confidence?: number; doc_type_detected?: string | null; message: string; verified_at: string}>).map((doc, i) => {
                           const isApproved = doc.status === 'approved';
                           const isRejected = doc.status === 'rejected';
                           return (
@@ -443,23 +449,30 @@ export default function AdminPage() {
                                 <span style={{ fontSize: '10px', fontWeight: 700, color: isApproved ? '#16A34A' : isRejected ? '#C8102E' : '#64748B', textTransform: 'uppercase' }}>{doc.status}</span>
                               </div>
                               <div style={{ fontSize: '11px', color: '#64748B', marginBottom: '3px', fontFamily: 'monospace' }}>{doc.file_name}</div>
+                              {/* {doc.doc_type_detected && (
+                                <div style={{ fontSize: '10px', color: '#6366F1', marginBottom: '3px' }}>
+                                  🤖 AI detected: <strong>{doc.doc_type_detected}</strong>
+                                </div>
+                              )} */}
                               {doc.message && <div style={{ fontSize: '10px', color: isRejected ? '#C8102E' : '#64748B', fontStyle: 'italic', marginBottom: '4px' }}>{doc.message}</div>}
-                              {/* <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px' }}>
                                 <div style={{ fontSize: '10px', color: '#94A3B8' }}>{doc.verified_at ? new Date(doc.verified_at).toLocaleDateString('en-IN') : ''}</div>
-                                <a
-                                  href={`http://localhost:8000/uploads/${doc.file_name}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  style={{
-                                    fontSize: '10px', fontWeight: 700, color: '#1A2B6D',
-                                    background: '#EEF2FF', border: '1px solid #C7D2FE',
-                                    borderRadius: '5px', padding: '3px 8px',
-                                    textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '3px'
-                                  }}
-                                >
-                                  👁 View File
-                                </a>
-                              </div> */}
+                                {doc.file_url && (
+                                  <a
+                                    href={doc.file_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                      fontSize: '10px', fontWeight: 700, color: '#1A2B6D',
+                                      background: '#EEF2FF', border: '1px solid #C7D2FE',
+                                      borderRadius: '5px', padding: '3px 8px',
+                                      textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '3px'
+                                    }}
+                                  >
+                                    👁 View File
+                                  </a>
+                                )}
+                              </div>
                             </div>
                           );
                         })}
