@@ -180,89 +180,151 @@ export default function ApplyPage() {
               background: '#1A2B6D',
               borderRadius: '12px',
               padding: '24px',
-              marginBottom: '28px'
+              marginBottom: '28px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '24px'
             }}>
-              <h3 style={{ color: 'white', fontWeight: 700, marginBottom: '6px' }}>Specialization Stream</h3>
-              <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '13px', marginBottom: '20px' }}>
-                Select your intended aviation career path. Each stream includes proprietary Air India training methodologies.
-              </p>
-              <div style={{ display: 'flex', gap: '12px' }}>
+              {/* Left — text */}
+              <div style={{ flex: 1 }}>
+                <h3 style={{ color: 'white', fontWeight: 700, marginBottom: '6px', margin: '0 0 6px' }}>Specialization Stream</h3>
+                <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '13px', margin: 0, lineHeight: 1.55 }}>
+                  Select your intended aviation career path. Each stream includes proprietary Air India training methodologies.
+                </p>
+              </div>
+
+              {/* Right — buttons */}
+              <div style={{ display: 'flex', gap: '12px', flexShrink: 0 }}>
                 <button
                   type="button"
                   id="stream-pilot"
                   onClick={() => handleStream('PILOT_CADET')}
                   style={{
-                    padding: '14px 28px',
+                    padding: '14px 24px',
                     borderRadius: '10px',
-                    border: 'none',
+                    border: form.stream === 'PILOT_CADET' ? 'none' : '1.5px solid rgba(255,255,255,0.2)',
                     cursor: 'pointer',
-                    fontWeight: 700,
-                    fontSize: '13px',
+                    fontWeight: 800,
+                    fontSize: '12px',
+                    letterSpacing: '0.05em',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
-                    background: form.stream === 'PILOT_CADET' ? '#C8102E' : 'rgba(255,255,255,0.12)',
+                    background: form.stream === 'PILOT_CADET' ? '#C8102E' : 'rgba(255,255,255,0.08)',
                     color: 'white',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    minWidth: '90px'
                   }}
                 >
-                  <span style={{ fontSize: '22px' }}>✈</span>
-                  PILOT<br />CADET
+                  <span style={{ fontSize: '24px' }}>✈</span>
+                  PILOT CADET
                 </button>
                 <button
                   type="button"
                   id="stream-mro"
                   onClick={() => handleStream('TECH_MRO')}
                   style={{
-                    padding: '14px 28px',
+                    padding: '14px 24px',
                     borderRadius: '10px',
-                    border: 'none',
+                    border: form.stream === 'TECH_MRO' ? 'none' : '1.5px solid rgba(255,255,255,0.2)',
                     cursor: 'pointer',
-                    fontWeight: 700,
-                    fontSize: '13px',
+                    fontWeight: 800,
+                    fontSize: '12px',
+                    letterSpacing: '0.05em',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
-                    background: form.stream === 'TECH_MRO' ? '#C8102E' : 'rgba(255,255,255,0.12)',
+                    background: form.stream === 'TECH_MRO' ? '#C8102E' : 'rgba(255,255,255,0.08)',
                     color: 'white',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    minWidth: '90px'
                   }}
                 >
-                  <span style={{ fontSize: '22px' }}>🔧</span>
-                  TECH<br />MRO
+                  <span style={{ fontSize: '24px' }}>🔧</span>
+                  TECH MRO
                 </button>
               </div>
             </div>
 
-            {/* Credential Verification Preview */}
+            {/* Eligibility & Requirements Info */}
             <div style={{ marginBottom: '28px' }}>
               <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1A2B6D', marginBottom: '16px', paddingBottom: '10px', borderBottom: '1px solid #E2E8F0' }}>
-                Credential Verification
+                Eligibility Criteria
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                {[
-                  { icon: '📱', title: 'National Passport', sub: 'High-Res Scan Only', progress: null },
-                  { icon: '🏥', title: 'DGCA Class I Medical', sub: '75% Complete', progress: 75 },
-                  { icon: '🎓', title: 'Academic Degrees', sub: '10+2 or Equivalent', progress: null },
-                ].map((doc, i) => (
-                  <div key={i} className="card" style={{ padding: '16px', textAlign: 'center', borderStyle: 'dashed' }}>
-                    {doc.progress !== null && (
-                      <div style={{ fontSize: '10px', color: '#B8952A', fontWeight: 700, textAlign: 'right', marginBottom: '4px' }}>
-                        {doc.progress}% Complete ↗
-                      </div>
-                    )}
-                    <div style={{ fontSize: '26px', marginBottom: '8px' }}>{doc.icon}</div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A2B6D', marginBottom: '4px' }}>{doc.title}</div>
-                    <div style={{ fontSize: '11px', color: '#64748B', marginBottom: '10px' }}>{doc.sub}</div>
-                    {doc.progress !== null ? (
-                      <div style={{ height: '4px', background: '#E2E8F0', borderRadius: '2px', overflow: 'hidden' }}>
-                        <div style={{ width: `${doc.progress}%`, height: '100%', background: '#B8952A', borderRadius: '2px' }} />
-                      </div>
-                    ) : (
-                      <button type="button" style={{
-                        fontSize: '11px', fontWeight: 700, color: '#1A2B6D',
-                        border: '1.5px solid #1A2B6D', borderRadius: '6px',
-                        padding: '4px 14px', cursor: 'pointer', background: 'transparent'
-                      }}>Upload</button>
-                    )}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px' }}>
+
+                {/* Academic Requirements */}
+                <div style={{
+                  background: 'linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%)',
+                  borderRadius: '14px', padding: '20px',
+                  border: '1px solid #C7D2FE'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                    <span style={{ fontSize: '20px' }}>🎓</span>
+                    <span style={{ fontSize: '13px', fontWeight: 800, color: '#1A2B6D' }}>Academic Requirements</span>
                   </div>
-                ))}
+                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {[
+                      '10th & 12th passed with PCM',
+                      'Minimum 70% in Physics',
+                      'Minimum 70% in Mathematics',
+                    ].map((item, i) => (
+                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '12px', color: '#374151', lineHeight: 1.45 }}>
+                        <span style={{ marginTop: '1px', flexShrink: 0, width: '16px', height: '16px', borderRadius: '50%', background: '#1A2B6D', color: 'white', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 700 }}>✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Age & Documents */}
+                <div style={{
+                  background: 'linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 100%)',
+                  borderRadius: '14px', padding: '20px',
+                  border: '1px solid #FDE68A'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                    <span style={{ fontSize: '20px' }}>📋</span>
+                    <span style={{ fontSize: '13px', fontWeight: 800, color: '#1A2B6D' }}>Age & Documents</span>
+                  </div>
+                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {[
+                      'Age: 17–28 years',
+                      'Valid medical certificate',
+                      'All required documents',
+                    ].map((item, i) => (
+                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '12px', color: '#374151', lineHeight: 1.45 }}>
+                        <span style={{ marginTop: '1px', flexShrink: 0, width: '16px', height: '16px', borderRadius: '50%', background: '#B8952A', color: 'white', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 700 }}>✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Required Documents */}
+                <div style={{
+                  background: 'linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%)',
+                  borderRadius: '14px', padding: '20px',
+                  border: '1px solid #FECDD3'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                    <span style={{ fontSize: '20px' }}>📁</span>
+                    <span style={{ fontSize: '13px', fontWeight: 800, color: '#1A2B6D' }}>Required Documents</span>
+                  </div>
+                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {[
+                      '10th Marksheet',
+                      '12th Marksheet',
+                      'Government ID Proof',
+                    ].map((item, i) => (
+                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '12px', color: '#374151', lineHeight: 1.45 }}>
+                        <span style={{ marginTop: '1px', flexShrink: 0, width: '16px', height: '16px', borderRadius: '50%', background: '#C8102E', color: 'white', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 700 }}>✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <div style={{ marginTop: '12px', fontSize: '10px', color: '#9CA3AF', fontStyle: 'italic' }}>
+                    Upload in Step 3 — Documentation
+                  </div>
+                </div>
+
               </div>
             </div>
 

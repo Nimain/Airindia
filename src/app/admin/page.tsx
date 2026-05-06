@@ -5,19 +5,32 @@ import Navbar from '../components/Navbar';
 const API_BASE = 'http://localhost:8000/api';
 
 interface Candidate {
-  student_id: string;
-  name: string;
+  id?: string;
+  student_id?: string;
+  name?: string;
+  legal_full_name?: string;
   email: string;
   stream: string;
   step_completed: number;
   overall_status: string;
+  // Personal
   mobile?: string;
   date_of_birth?: string;
+  // Education
+  highest_qualification?: string;
+  institute_name?: string;
+  graduation_year?: string;
+  // Experience
+  flight_hours?: string;
+  mro_certification?: string | null;
+  other_experience?: string | null;
+  // Timestamps
+  created_at?: string;
+  updated_at?: string;
+  // Documents
   documents?: {
-    total: number;
-    approved: number;
-    rejected: number;
-    list: Array<{
+    total?: number;
+    list?: Array<{
       doc_type: string;
       file_name: string;
       status: string;
@@ -25,8 +38,28 @@ interface Candidate {
       message: string;
       verified_at: string;
     }>;
-  };
+  } | Array<{
+    doc_type: string;
+    file_name: string;
+    status: string;
+    confidence: number;
+    message: string;
+    verified_at: string;
+  }>;
+  [key: string]: unknown;
 }
+
+/** Resolve the real Mongo _id regardless of which field name the API used */
+const cid = (c: Candidate) => (c.id ?? c.student_id ?? '') as string;
+/** Resolve display name */
+const cname = (c: Candidate) => (c.name ?? c.legal_full_name ?? '—') as string;
+/** Pretty-print status labels */
+const statusLabel = (s: string) => {
+  if (s === 'documents_uploaded') return 'Docs Uploaded';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+/** Whether admin can still decide */
+const canDecide = (status: string) => status === 'pending' || status === 'documents_uploaded';
 
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   approved: { bg: '#DCFCE7', color: '#16A34A' },
@@ -85,8 +118,8 @@ export default function AdminPage() {
       const res = await fetch(`${API_BASE}/admin/candidate/${id}/status?status=${newStatus}`, { method: 'PATCH' });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Action failed');
-      setCandidates(prev => prev.map(c => c.student_id === id ? { ...c, overall_status: newStatus } : c));
-      if (selected?.student_id === id) setSelected({ ...selected, overall_status: newStatus });
+      setCandidates(prev => prev.map(c => cid(c) === id ? { ...c, overall_status: newStatus } : c));
+      if (selected && cid(selected) === id) setSelected({ ...selected, overall_status: newStatus });
     } catch (err: unknown) {
       console.error(err);
     } finally {
@@ -97,7 +130,7 @@ export default function AdminPage() {
   const filtered = candidates.filter(c => {
     const matchStatus = filterStatus === 'all' || c.overall_status === filterStatus;
     const matchStream = filterStream === 'all' || c.stream === filterStream;
-    const matchSearch = !searchQuery || c.name?.toLowerCase().includes(searchQuery.toLowerCase()) || c.email?.toLowerCase().includes(searchQuery.toLowerCase()) || c.student_id?.includes(searchQuery);
+    const matchSearch = !searchQuery || cname(c).toLowerCase().includes(searchQuery.toLowerCase()) || c.email?.toLowerCase().includes(searchQuery.toLowerCase()) || cid(c).includes(searchQuery);
     return matchStatus && matchStream && matchSearch;
   });
 
@@ -107,7 +140,6 @@ export default function AdminPage() {
       rejected: candidates.filter(c => c.overall_status === 'rejected').length,
       pending:  candidates.filter(c =>
         c.overall_status === 'pending' ||
-        c.overall_status === 'completed' ||
         c.overall_status === 'documents_uploaded'
       ).length,
     };
@@ -168,7 +200,6 @@ export default function AdminPage() {
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
             <option value="documents_uploaded">Docs Uploaded</option>
-            <option value="completed">Completed</option>
             <option value="approved">Approved</option>
             <option value="rejected">Rejected</option>
           </select>
@@ -217,15 +248,15 @@ export default function AdminPage() {
                   {filtered.map((c, i) => {
                     const sc = STATUS_COLORS[c.overall_status] || STATUS_COLORS.pending;
                     return (
-                      <tr key={`${c.student_id}-${i}`} style={{
+                      <tr key={`${cid(c)}-${i}`} style={{
                         borderBottom: '1px solid #F1F5F9',
-                        background: selected?.student_id === c.student_id ? '#EEF2FF' : i % 2 === 0 ? 'white' : '#FAFAFA',
+                        background: selected && cid(selected) === cid(c) ? '#EEF2FF' : i % 2 === 0 ? 'white' : '#FAFAFA',
                         transition: 'background 0.15s'
                       }}>
                         <td style={{ padding: '14px 16px' }}>
-                          <div style={{ fontWeight: 700, color: '#1A2B6D', fontSize: '14px', marginBottom: '2px' }}>{c.name}</div>
+                          <div style={{ fontWeight: 700, color: '#1A2B6D', fontSize: '14px', marginBottom: '2px' }}>{cname(c)}</div>
                           <div style={{ fontSize: '12px', color: '#94A3B8' }}>{c.email}</div>
-                          <div style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '2px', fontFamily: 'monospace' }}>{c.student_id?.substring(0, 16)}...</div>
+                          <div style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '2px', fontFamily: 'monospace' }}>{cid(c).substring(0, 16)}...</div>
                         </td>
                         <td style={{ padding: '14px 16px' }}>
                           <span className="tag" style={{ background: c.stream === 'PILOT_CADET' ? '#EEF2FF' : '#FFF1F2', color: c.stream === 'PILOT_CADET' ? '#1A2B6D' : '#C8102E' }}>
@@ -244,35 +275,45 @@ export default function AdminPage() {
                           <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '4px' }}>{c.step_completed}/3</div>
                         </td>
                         <td style={{ padding: '14px 16px' }}>
-                          <span className="tag" style={{ background: sc.bg, color: sc.color, textTransform: 'capitalize' }}>
-                            {c.overall_status}
+                          <span className="tag" style={{ background: sc.bg, color: sc.color }}>
+                            {statusLabel(c.overall_status)}
                           </span>
                         </td>
                         <td style={{ padding: '14px 16px' }}>
-                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
                             <button
-                              onClick={() => fetchDetail(c.student_id)}
+                              onClick={() => fetchDetail(cid(c))}
                               style={{ fontSize: '12px', fontWeight: 600, color: '#1A2B6D', border: '1px solid #E2E8F0', background: 'white', borderRadius: '6px', padding: '5px 10px', cursor: 'pointer' }}
                             >
                               View
                             </button>
-                            {c.overall_status !== 'approved' && (
-                              <button
-                                onClick={() => updateStatus(c.student_id, 'approved')}
-                                disabled={actionLoading === `${c.student_id}-approved`}
-                                style={{ fontSize: '12px', fontWeight: 600, color: '#16A34A', border: '1px solid #86EFAC', background: '#F0FDF4', borderRadius: '6px', padding: '5px 10px', cursor: 'pointer' }}
-                              >
-                                ✓ Approve
-                              </button>
-                            )}
-                            {c.overall_status !== 'rejected' && (
-                              <button
-                                onClick={() => updateStatus(c.student_id, 'rejected')}
-                                disabled={actionLoading === `${c.student_id}-rejected`}
-                                style={{ fontSize: '12px', fontWeight: 600, color: '#C8102E', border: '1px solid #FECDD3', background: '#FFF1F2', borderRadius: '6px', padding: '5px 10px', cursor: 'pointer' }}
-                              >
-                                ✕ Reject
-                              </button>
+                            {canDecide(c.overall_status) ? (
+                              <>
+                                <button
+                                  onClick={() => updateStatus(cid(c), 'approved')}
+                                  disabled={actionLoading === `${cid(c)}-approved`}
+                                  style={{ fontSize: '12px', fontWeight: 600, color: '#16A34A', border: '1px solid #86EFAC', background: '#F0FDF4', borderRadius: '6px', padding: '5px 10px', cursor: 'pointer' }}
+                                >
+                                  ✓ Approve
+                                </button>
+                                <button
+                                  onClick={() => updateStatus(cid(c), 'rejected')}
+                                  disabled={actionLoading === `${cid(c)}-rejected`}
+                                  style={{ fontSize: '12px', fontWeight: 600, color: '#C8102E', border: '1px solid #FECDD3', background: '#FFF1F2', borderRadius: '6px', padding: '5px 10px', cursor: 'pointer' }}
+                                >
+                                  ✕ Reject
+                                </button>
+                              </>
+                            ) : (
+                              <span style={{
+                                fontSize: '10px', fontWeight: 700, letterSpacing: '0.06em',
+                                color: c.overall_status === 'approved' ? '#16A34A' : '#C8102E',
+                                background: c.overall_status === 'approved' ? '#F0FDF4' : '#FFF1F2',
+                                border: `1px solid ${c.overall_status === 'approved' ? '#BBF7D0' : '#FECDD3'}`,
+                                borderRadius: '6px', padding: '4px 10px'
+                              }}>
+                                {c.overall_status === 'approved' ? '✓ Approved' : '✕ Rejected'}
+                              </span>
                             )}
                           </div>
                         </td>
@@ -296,79 +337,167 @@ export default function AdminPage() {
                 <div style={{ textAlign: 'center', color: '#64748B', padding: '30px' }}>Loading...</div>
               ) : (
                 <>
-                  <div style={{ marginBottom: '20px' }}>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#1A2B6D', marginBottom: '4px' }}>{selected.name}</div>
-                    <div style={{ fontSize: '13px', color: '#64748B' }}>{selected.email}</div>
-                    {selected.mobile && <div style={{ fontSize: '13px', color: '#64748B' }}>📱 {selected.mobile}</div>}
+                  {/* — Header — */}
+                  <div style={{ marginBottom: '18px', paddingBottom: '16px', borderBottom: '1px solid #F1F5F9' }}>
+                    <div style={{ fontSize: '20px', fontWeight: 900, color: '#1A2B6D', marginBottom: '3px' }}>{cname(selected)}</div>
+                    <div style={{ fontSize: '12px', color: '#64748B' }}>{selected.email}</div>
+                    {selected.mobile && <div style={{ fontSize: '12px', color: '#64748B' }}>📱 {selected.mobile}</div>}
+                    <div style={{ fontFamily: 'monospace', fontSize: '9px', color: '#CBD5E1', marginTop: '4px', wordBreak: 'break-all' }}>ID: {cid(selected)}</div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
+                  {/* — Status Grid — */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '18px' }}>
                     {[
                       { label: 'Stream', value: selected.stream === 'PILOT_CADET' ? '✈ Pilot Cadet' : '🔧 Tech MRO' },
                       { label: 'Status', value: selected.overall_status },
-                      { label: 'Step', value: `${selected.step_completed}/3` },
-                      { label: 'Docs', value: `${selected.documents?.total ?? 0} uploaded` },
+                      { label: 'Step Completed', value: `${selected.step_completed}/3` },
+                      { label: 'Documents', value: `${Array.isArray(selected.documents) ? selected.documents.length : (selected.documents as {total?: number})?.total ?? 0} uploaded` },
                     ].map((item, i) => (
-                      <div key={i} style={{ background: '#F8FAFC', borderRadius: '8px', padding: '10px 14px' }}>
-                        <div style={{ fontSize: '10px', color: '#94A3B8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>{item.label}</div>
-                        <div style={{ fontSize: '14px', fontWeight: 700, color: '#1A2B6D', textTransform: 'capitalize' }}>{item.value}</div>
+                      <div key={i} style={{ background: '#F8FAFC', borderRadius: '8px', padding: '9px 12px' }}>
+                        <div style={{ fontSize: '9px', color: '#94A3B8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>{item.label}</div>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A2B6D', textTransform: 'capitalize' }}>{item.value}</div>
                       </div>
                     ))}
                   </div>
 
-                  <div style={{ fontFamily: 'monospace', fontSize: '10px', color: '#94A3B8', wordBreak: 'break-all', marginBottom: '20px', background: '#F8FAFC', padding: '8px 12px', borderRadius: '8px' }}>
-                    ID: {selected.student_id}
+                  {/* — Personal Info — */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>👤 Personal</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                      {[
+                        { label: 'Date of Birth', value: selected.date_of_birth ?? '—' },
+                        { label: 'Mobile', value: selected.mobile ?? '—' },
+                      ].map((item, i) => (
+                        <div key={i} style={{ background: '#F8FAFC', borderRadius: '7px', padding: '8px 11px' }}>
+                          <div style={{ fontSize: '9px', color: '#94A3B8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>{item.label}</div>
+                          <div style={{ fontSize: '12px', fontWeight: 600, color: '#374151' }}>{item.value}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
-                  {/* Documents */}
-                  {selected.documents?.list && selected.documents.list.length > 0 && (
-                    <div style={{ marginBottom: '20px' }}>
-                      <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>Documents</div>
-                      {selected.documents.list.map((doc, i) => {
-                        const isApproved = doc.status === 'approved';
-                        const isRejected = doc.status === 'rejected';
-                        return (
-                          <div key={i} style={{
-                            padding: '12px', borderRadius: '8px', marginBottom: '8px',
-                            background: isApproved ? '#F0FDF4' : isRejected ? '#FFF1F2' : '#F8FAFC',
-                            border: `1px solid ${isApproved ? '#BBF7D0' : isRejected ? '#FECDD3' : '#E2E8F0'}`
-                          }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '13px', fontWeight: 600, color: '#1A2B6D', textTransform: 'capitalize' }}>{doc.doc_type}</span>
-                              <span style={{ fontSize: '11px', fontWeight: 700, color: isApproved ? '#16A34A' : isRejected ? '#C8102E' : '#64748B', textTransform: 'capitalize' }}>{doc.status}</span>
-                            </div>
-                            <div style={{ fontSize: '12px', color: '#64748B', marginBottom: '4px' }}>{doc.file_name}</div>
-                            {doc.message && <div style={{ fontSize: '11px', color: isRejected ? '#C8102E' : '#64748B', fontStyle: 'italic' }}>{doc.message}</div>}
-                            <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '4px' }}>AI Confidence: {doc.confidence?.toFixed(1)}%</div>
-                          </div>
-                        );
-                      })}
+                  {/* — Education — */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>🎓 Education</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                      {[
+                        { label: 'Qualification', value: selected.highest_qualification ?? '—' },
+                        { label: 'Institute', value: selected.institute_name ?? '—' },
+                        { label: 'Graduation Year', value: selected.graduation_year ?? '—' },
+                      ].map((item, i) => (
+                        <div key={i} style={{ background: '#EEF2FF', borderRadius: '7px', padding: '8px 11px' }}>
+                          <div style={{ fontSize: '9px', color: '#6366F1', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>{item.label}</div>
+                          <div style={{ fontSize: '12px', fontWeight: 600, color: '#374151' }}>{item.value}</div>
+                        </div>
+                      ))}
                     </div>
-                  )}
+                  </div>
 
-                  {/* Action Buttons */}
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    {selected.overall_status !== 'approved' && (
+                  {/* — Experience — */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>✈ Experience</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                      {[
+                        { label: 'Flight Hours', value: selected.flight_hours ? `${selected.flight_hours} hrs` : '—' },
+                        { label: 'MRO Certification', value: selected.mro_certification ?? '—' },
+                        { label: 'Other Experience', value: selected.other_experience ?? '—' },
+                      ].map((item, i) => (
+                        <div key={i} style={{ background: '#FFF7ED', borderRadius: '7px', padding: '8px 11px' }}>
+                          <div style={{ fontSize: '9px', color: '#B8952A', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>{item.label}</div>
+                          <div style={{ fontSize: '12px', fontWeight: 600, color: '#374151' }}>{item.value}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* — Timestamps — */}
+                  <div style={{ marginBottom: '16px', background: '#F8FAFC', borderRadius: '8px', padding: '10px 12px' }}>
+                    <div style={{ fontSize: '9px', color: '#94A3B8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>🕐 Timeline</div>
+                    <div style={{ fontSize: '11px', color: '#64748B', marginBottom: '3px' }}>
+                      <span style={{ fontWeight: 600 }}>Applied:</span> {selected.created_at ? new Date(selected.created_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#64748B' }}>
+                      <span style={{ fontWeight: 600 }}>Last Updated:</span> {selected.updated_at ? new Date(selected.updated_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
+                    </div>
+                  </div>
+
+                  {/* — Documents — */}
+                  {(() => {
+                    const docList = Array.isArray(selected.documents)
+                      ? selected.documents
+                      : (selected.documents as {list?: unknown[]})?.list ?? [];
+                    return docList.length > 0 && (
+                      <div style={{ marginBottom: '16px' }}>
+                        <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>📁 Documents</div>
+                        {(docList as Array<{doc_type: string; file_name: string; status: string; confidence: number; message: string; verified_at: string}>).map((doc, i) => {
+                          const isApproved = doc.status === 'approved';
+                          const isRejected = doc.status === 'rejected';
+                          return (
+                            <div key={i} style={{
+                              padding: '10px 12px', borderRadius: '8px', marginBottom: '7px',
+                              background: isApproved ? '#F0FDF4' : isRejected ? '#FFF1F2' : '#F8FAFC',
+                              border: `1px solid ${isApproved ? '#BBF7D0' : isRejected ? '#FECDD3' : '#E2E8F0'}`
+                            }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                                <span style={{ fontSize: '12px', fontWeight: 700, color: '#1A2B6D', textTransform: 'capitalize' }}>{doc.doc_type}</span>
+                                <span style={{ fontSize: '10px', fontWeight: 700, color: isApproved ? '#16A34A' : isRejected ? '#C8102E' : '#64748B', textTransform: 'uppercase' }}>{doc.status}</span>
+                              </div>
+                              <div style={{ fontSize: '11px', color: '#64748B', marginBottom: '3px', fontFamily: 'monospace' }}>{doc.file_name}</div>
+                              {doc.message && <div style={{ fontSize: '10px', color: isRejected ? '#C8102E' : '#64748B', fontStyle: 'italic', marginBottom: '4px' }}>{doc.message}</div>}
+                              {/* <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                                <div style={{ fontSize: '10px', color: '#94A3B8' }}>{doc.verified_at ? new Date(doc.verified_at).toLocaleDateString('en-IN') : ''}</div>
+                                <a
+                                  href={`http://localhost:8000/uploads/${doc.file_name}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    fontSize: '10px', fontWeight: 700, color: '#1A2B6D',
+                                    background: '#EEF2FF', border: '1px solid #C7D2FE',
+                                    borderRadius: '5px', padding: '3px 8px',
+                                    textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '3px'
+                                  }}
+                                >
+                                  👁 View File
+                                </a>
+                              </div> */}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
+
+                  {/* Action Buttons — shown only while awaiting admin decision */}
+                  {canDecide(selected.overall_status) ? (
+                    <div style={{ display: 'flex', gap: '10px' }}>
                       <button
-                        onClick={() => updateStatus(selected.student_id, 'approved')}
+                        onClick={() => updateStatus(cid(selected), 'approved')}
                         className="btn-primary"
                         style={{ flex: 1, padding: '11px 16px', fontSize: '14px', background: '#16A34A', justifyContent: 'center' }}
                         disabled={!!actionLoading}
                       >
                         ✓ Approve
                       </button>
-                    )}
-                    {selected.overall_status !== 'rejected' && (
                       <button
-                        onClick={() => updateStatus(selected.student_id, 'rejected')}
+                        onClick={() => updateStatus(cid(selected), 'rejected')}
                         className="btn-red"
                         style={{ flex: 1, padding: '11px 16px', fontSize: '14px', justifyContent: 'center' }}
                         disabled={!!actionLoading}
                       >
                         ✕ Reject
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div style={{
+                      textAlign: 'center', padding: '14px 16px', borderRadius: '10px',
+                      background: selected.overall_status === 'approved' ? '#F0FDF4' : '#FFF1F2',
+                      border: `1px solid ${selected.overall_status === 'approved' ? '#BBF7D0' : '#FECDD3'}`,
+                      fontSize: '14px', fontWeight: 700,
+                      color: selected.overall_status === 'approved' ? '#16A34A' : '#C8102E'
+                    }}>
+                      {selected.overall_status === 'approved' ? '✓ Application Approved' : '✕ Application Rejected'}
+                    </div>
+                  )}
                 </>
               )}
             </div>
