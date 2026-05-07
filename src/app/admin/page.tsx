@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://airindialms.solutionbriz.com/api';
+// const API_BASE = 'http://localhost:8000/api';
 
 interface Candidate {
   id?: string;
@@ -29,10 +29,20 @@ interface Candidate {
   updated_at?: string;
   // Documents
   documents?: {
-  total?: number;
-  approved?: number;
-  rejected?: number;
-  list?: Array<{
+    total?: number;
+    approved?: number;
+    rejected?: number;
+    list?: Array<{
+      doc_type: string;
+      file_name: string;
+      file_url?: string | null;
+      status: string;
+      confidence?: number;
+      doc_type_detected?: string | null;
+      message: string;
+      verified_at: string;
+    }>;
+  } | Array<{
     doc_type: string;
     file_name: string;
     file_url?: string | null;
@@ -42,16 +52,6 @@ interface Candidate {
     message: string;
     verified_at: string;
   }>;
-} | Array<{
-  doc_type: string;
-  file_name: string;
-  file_url?: string | null;
-  status: string;
-  confidence?: number;
-  doc_type_detected?: string | null;
-  message: string;
-  verified_at: string;
-}>;
   [key: string]: unknown;
 }
 
@@ -72,7 +72,7 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   rejected: { bg: '#FFF1F2', color: '#C8102E' },
   pending: { bg: '#FEF3C7', color: '#B8952A' },
   completed: { bg: '#EEF2FF', color: '#1A2B6D' },
-  documents_uploaded:  { bg: '#F0F9FF', color: '#0369A1' },
+  documents_uploaded: { bg: '#F0F9FF', color: '#0369A1' },
 };
 
 export default function AdminPage() {
@@ -141,14 +141,14 @@ export default function AdminPage() {
   });
 
   const counts = {
-      total:    candidates.length,
-      approved: candidates.filter(c => c.overall_status === 'approved').length,
-      rejected: candidates.filter(c => c.overall_status === 'rejected').length,
-      pending:  candidates.filter(c =>
-        c.overall_status === 'pending' ||
-        c.overall_status === 'documents_uploaded'
-      ).length,
-    };
+    total: candidates.length,
+    approved: candidates.filter(c => c.overall_status === 'approved').length,
+    rejected: candidates.filter(c => c.overall_status === 'rejected').length,
+    pending: candidates.filter(c =>
+      c.overall_status === 'pending' ||
+      c.overall_status === 'documents_uploaded'
+    ).length,
+  };
 
   return (
     <div style={{ minHeight: '100vh', background: '#F5F7FA' }}>
@@ -162,13 +162,13 @@ export default function AdminPage() {
             <p style={{ color: '#64748B', fontSize: '14px' }}>Review, approve or reject admission applications.</p>
           </div>
           <button
-              className="btn-ghost"
-              onClick={fetchCandidates}
-              style={{ alignSelf: 'flex-start' }}
-              suppressHydrationWarning
-            >
-              ↻ Refresh
-            </button>
+            className="btn-ghost"
+            onClick={fetchCandidates}
+            style={{ alignSelf: 'flex-start' }}
+            suppressHydrationWarning
+          >
+            ↻ Refresh
+          </button>
         </div>
 
         {/* Stats */}
@@ -210,12 +210,12 @@ export default function AdminPage() {
             <option value="rejected">Rejected</option>
           </select>
           <select
-              className="form-input"
-              value={filterStream}
-              onChange={e => setFilterStream(e.target.value)}
-              style={{ maxWidth: '160px' }}
-              suppressHydrationWarning
-            >
+            className="form-input"
+            value={filterStream}
+            onChange={e => setFilterStream(e.target.value)}
+            style={{ maxWidth: '160px' }}
+            suppressHydrationWarning
+          >
             <option value="all">All Streams</option>
             <option value="PILOT_CADET">Pilot Cadet</option>
             <option value="TECH_MRO">Tech MRO</option>
@@ -357,7 +357,7 @@ export default function AdminPage() {
                       { label: 'Stream', value: selected.stream === 'PILOT_CADET' ? '✈ Pilot Cadet' : '🔧 Tech MRO' },
                       { label: 'Status', value: selected.overall_status },
                       { label: 'Step Completed', value: `${selected.step_completed}/3` },
-                      { label: 'Documents', value: `${Array.isArray(selected.documents) ? selected.documents.length : (selected.documents as {total?: number})?.total ?? 0} uploaded` },
+                      { label: 'Documents', value: `${Array.isArray(selected.documents) ? selected.documents.length : (selected.documents as { total?: number })?.total ?? 0} uploaded` },
                     ].map((item, i) => (
                       <div key={i} style={{ background: '#F8FAFC', borderRadius: '8px', padding: '9px 12px' }}>
                         <div style={{ fontSize: '9px', color: '#94A3B8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>{item.label}</div>
@@ -431,11 +431,11 @@ export default function AdminPage() {
                   {(() => {
                     const docList = Array.isArray(selected.documents)
                       ? selected.documents
-                      : (selected.documents as {list?: unknown[]})?.list ?? [];
+                      : (selected.documents as { list?: unknown[] })?.list ?? [];
                     return docList.length > 0 && (
                       <div style={{ marginBottom: '16px' }}>
                         <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>📁 Documents</div>
-                        {(docList as Array<{doc_type: string; file_name: string; file_url?: string | null; status: string; confidence?: number; doc_type_detected?: string | null; message: string; verified_at: string}>).map((doc, i) => {
+                        {(docList as Array<{ doc_type: string; file_name: string; file_url?: string | null; status: string; confidence?: number; doc_type_detected?: string | null; message: string; verified_at: string }>).map((doc, i) => {
                           const isApproved = doc.status === 'approved';
                           const isRejected = doc.status === 'rejected';
                           return (
