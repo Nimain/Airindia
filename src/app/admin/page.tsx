@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://airindia.solutionbriz.com/api';
 // const API_BASE = 'http://localhost:8000/api';
 
 interface Candidate {

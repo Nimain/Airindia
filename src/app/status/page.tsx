@@ -3,7 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '../components/Navbar';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://airindia.solutionbriz.com/api';
 
 interface Document {
   doc_type: string;

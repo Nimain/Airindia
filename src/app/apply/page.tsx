@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://airindia.solutionbriz.com/api';
 
 export default function ApplyPage() {
   const router = useRouter();
