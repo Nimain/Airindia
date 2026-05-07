@@ -144,7 +144,7 @@ export default function DocumentsPage() {
 
       <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 24px' }}>
         {/* Header */}
-        <div className="rsp-docs-header" style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'flex-start', marginBottom: '36px' }} className="animate-fadeInUp">
+        <div className="rsp-docs-header animate-fadeInUp" style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'flex-start', marginBottom: '36px' }}>
           <div>
             <span style={{ color: '#1A2B6D', fontSize: '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
               Admission Journey
