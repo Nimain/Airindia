@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';
+import DatePicker from '../components/DatePicker';
 
 const API_BASE = 'https://airindia.solutionbriz.com/api';
 
@@ -162,14 +163,10 @@ export default function ApplyPage() {
               </div>
               <div>
                 <label className="form-label">Date of Birth</label>
-                <input
+                <DatePicker
                   id="date_of_birth"
-                  className="form-input"
-                  name="date_of_birth"
-                  type="date"
-                  placeholder="mm/dd/yyyy"
                   value={form.date_of_birth}
-                  onChange={handleChange}
+                  onChange={(val) => setForm({ ...form, date_of_birth: val })}
                   required
                 />
               </div>
