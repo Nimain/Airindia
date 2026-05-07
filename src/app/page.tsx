@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #F5F7FA 0%, #EEF2FF 100%)' }}>
       <Navbar />
-      <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 24px' }}>
+      <main className="rsp-main-home" style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 24px' }}>
         {/* Hero */}
         <div style={{ textAlign: 'center', marginBottom: '80px' }} className="animate-fadeInUp">
           <span style={{
@@ -21,7 +21,7 @@ export default function Home() {
             borderRadius: '20px',
             marginBottom: '20px'
           }}>
-            ✦ Airindia&apos; Aviation
+            ✦ Airindia's Aviation
           </span>
           <h1 style={{ fontSize: '54px', fontWeight: 900, color: '#1A2B6D', lineHeight: 1.1, marginBottom: '20px' }}>
             Cadet Pilot Program<br />
@@ -45,7 +45,7 @@ export default function Home() {
         </div>
 
         {/* Program Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '60px' }}>
+        <div className="rsp-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '60px' }}>
           <div className="card" style={{ padding: '36px', borderTop: '4px solid #1A2B6D' }}>
             <div style={{ fontSize: '40px', marginBottom: '16px' }}>✈️</div>
             <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#1A2B6D', marginBottom: '10px' }}>Pilot Cadet</h2>
@@ -77,7 +77,7 @@ export default function Home() {
           <h2 style={{ fontSize: '26px', fontWeight: 800, color: '#1A2B6D', marginBottom: '40px' }}>
             Your 3-Step Journey
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '32px' }}>
+          <div className="rsp-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '32px' }}>
             {[
               { step: '01', title: 'Personal Identity', desc: 'Share your basic info, contact details and choose your stream' },
               { step: '02', title: 'Education & Experience', desc: 'Provide academic background and aviation experience' },

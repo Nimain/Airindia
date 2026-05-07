@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 
-const API_BASE = 'https://airindialms.solutionbriz.com/api';
+const API_BASE = 'http://localhost:8000/api';
 
 type DocStatus = 'uploaded' | 'pending' | 'error';
 
@@ -144,7 +144,7 @@ export default function DocumentsPage() {
 
       <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 24px' }}>
         {/* Header */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'flex-start', marginBottom: '36px' }} className="animate-fadeInUp">
+        <div className="rsp-docs-header" style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'flex-start', marginBottom: '36px' }} className="animate-fadeInUp">
           <div>
             <span style={{ color: '#1A2B6D', fontSize: '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
               Admission Journey
@@ -167,7 +167,7 @@ export default function DocumentsPage() {
         </div>
 
         {/* Document Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '32px' }}>
+        <div className="rsp-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '32px' }}>
           {docs.map((doc) => (
             <div key={doc.id} className="card animate-fadeInUp" style={{ padding: '24px', position: 'relative' }}>
               {/* Status badge */}

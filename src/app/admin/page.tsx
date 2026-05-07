@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-const API_BASE = 'https://airindialms.solutionbriz.com/api';
+const API_BASE = 'http://localhost:8000/api';
 // const API_BASE = 'http://localhost:8000/api';
 
 interface Candidate {
@@ -172,7 +172,7 @@ export default function AdminPage() {
         </div>
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '28px' }}>
+        <div className="rsp-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '28px' }}>
           {[
             { label: 'Total', value: counts.total, color: '#1A2B6D', bg: '#EEF2FF' },
             { label: 'Approved', value: counts.approved, color: '#16A34A', bg: '#DCFCE7' },
@@ -187,7 +187,7 @@ export default function AdminPage() {
         </div>
 
         {/* Filters */}
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+        <div className="rsp-filters" style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
           <input
             className="form-input"
             placeholder="Search by name, email, or ID..."

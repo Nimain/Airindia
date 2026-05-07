@@ -159,3 +159,105 @@ body {
   padding: 3px 10px;
   border-radius: 20px;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE OVERRIDES  —  mobile only (≤768px)
+   All desktop inline styles remain 100% intact.
+   Only these media-query rules activate on small screens.
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Reduce main page padding on mobile ── */
+  .rsp-main-home,
+  .rsp-main-form,
+  .rsp-promo-section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 28px !important;
+  }
+  .rsp-main-home { padding-bottom: 28px !important; }
+
+  /* ── Heading font scale-down ── */
+  .rsp-main-home h1 { font-size: 32px !important; }
+  .rsp-main-form h1 { font-size: 26px !important; }
+  .rsp-docs-header h1 { font-size: 26px !important; }
+  .rsp-edu-main h1 { font-size: 26px !important; }
+
+  /* ── 2-col → 1-col grids ── */
+  .rsp-grid-2 { grid-template-columns: 1fr !important; }
+
+  /* ── 3-col → 1-col grids ── */
+  .rsp-grid-3 { grid-template-columns: 1fr !important; }
+
+  /* ── 4-col stats → 2-col ── */
+  .rsp-stats-grid { grid-template-columns: 1fr 1fr !important; }
+
+  /* ── Step indicator: stack vertically, hide connectors ── */
+  .rsp-step-indicator {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  .rsp-step-indicator > div { flex: none !important; }
+  .rsp-step-indicator div[style*="height: 1.5px"] { display: none !important; }
+
+  /* ── Form card padding ── */
+  .rsp-main-form .card { padding: 20px !important; }
+
+  /* ── Stream selection: stack text + buttons vertically ── */
+  .rsp-stream-box {
+    flex-direction: column !important;
+    padding: 20px !important;
+    gap: 16px !important;
+  }
+  .rsp-stream-box > div:last-child { flex-shrink: unset !important; width: 100%; justify-content: center; display: flex; }
+
+  /* ── Form footer: stack buttons full-width ── */
+  .rsp-form-footer {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .rsp-form-footer > span { text-align: center; }
+  .rsp-form-footer > div { flex-direction: column !important; gap: 10px !important; }
+  .rsp-form-footer button { width: 100% !important; justify-content: center !important; }
+
+  /* ── Education page: sidebar + form → single column ── */
+  .rsp-edu-main {
+    grid-template-columns: 1fr !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 24px !important;
+    gap: 20px !important;
+  }
+
+  /* ── Documents page header: progress bar full width ── */
+  .rsp-docs-header {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .rsp-docs-header > div:last-child { text-align: left !important; }
+  .rsp-docs-header div[style*="width: 260px"] { width: 100% !important; }
+
+  /* ── Status search row: stack input + button ── */
+  .rsp-search-row { flex-direction: column !important; }
+  .rsp-search-row .btn-primary { width: 100% !important; justify-content: center !important; }
+
+  /* ── Admin filters: full-width inputs ── */
+  .rsp-filters .form-input { max-width: 100% !important; width: 100%; }
+
+  /* ── Admin table: horizontal scroll ── */
+  .card[style*="overflow: hidden"] { overflow-x: auto !important; }
+
+  /* ── Promo section bottom of apply page ── */
+  .rsp-promo-section .rsp-grid-2 { gap: 24px !important; }
+
+  /* ── Navbar: allow links to wrap on very small screens ── */
+  nav > div { flex-wrap: wrap; padding-top: 12px; padding-bottom: 8px; }
+
+  /* ── Navbar: hide desktop links + CTA, show hamburger ── */
+  .navbar-links  { display: none !important; }
+  .navbar-cta    { display: none !important; }
+  .navbar-hamburger { display: flex !important; }
+  .navbar-mobile-menu { display: block !important; }
+}

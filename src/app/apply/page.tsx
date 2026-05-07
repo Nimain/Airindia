@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';
 
-const API_BASE = 'https://airindialms.solutionbriz.com/api';
+const API_BASE = 'http://localhost:8000/api';
 
 export default function ApplyPage() {
   const router = useRouter();
@@ -56,7 +56,7 @@ export default function ApplyPage() {
     <div style={{ minHeight: '100vh', background: '#F5F7FA', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
 
-      <main style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 24px' }}>
+      <main className="rsp-main-form" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 24px' }}>
         {/* Header */}
         <div style={{ marginBottom: '32px' }} className="animate-fadeInUp">
           <span style={{ color: '#C8102E', fontSize: '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
@@ -71,7 +71,7 @@ export default function ApplyPage() {
         </div>
 
         {/* Step Indicator */}
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '32px', gap: '0' }}>
+        <div className="rsp-step-indicator" style={{ display: 'flex', alignItems: 'center', marginBottom: '32px', gap: '0' }}>
           {[
             { num: 1, label: 'Personal Identity', sub: 'Current Step' },
             { num: 2, label: 'Education', sub: 'Pending' },
@@ -122,7 +122,7 @@ export default function ApplyPage() {
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+            <div className="rsp-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
               <div>
                 <label className="form-label">Legal Full Name</label>
                 <input
@@ -176,7 +176,7 @@ export default function ApplyPage() {
             </div>
 
             {/* Stream Selection */}
-            <div style={{
+            <div className="rsp-stream-box" style={{
               background: '#1A2B6D',
               borderRadius: '12px',
               padding: '24px',
@@ -248,7 +248,7 @@ export default function ApplyPage() {
               <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1A2B6D', marginBottom: '16px', paddingBottom: '10px', borderBottom: '1px solid #E2E8F0' }}>
                 Eligibility Criteria
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px' }}>
+              <div className="rsp-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px' }}>
 
                 {/* Academic Requirements */}
                 <div style={{
@@ -338,7 +338,7 @@ export default function ApplyPage() {
             )}
 
             {/* Footer */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="rsp-form-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '12px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 ✦ Application integrity verified by Air India Security.
               </span>
@@ -354,8 +354,8 @@ export default function ApplyPage() {
       </main>
 
       {/* Premium Cadet Status Section */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '20px 24px 60px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center' }}>
+      <section className="rsp-promo-section" style={{ maxWidth: '900px', margin: '0 auto', padding: '20px 24px 60px' }}>
+        <div className="rsp-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center' }}>
           {/* Left — Airplane image card */}
           <div style={{ position: 'relative', borderRadius: '20px', overflow: 'hidden', aspectRatio: '4/3', boxShadow: '0 12px 40px rgba(0,0,0,0.2)' }}>
             <Image

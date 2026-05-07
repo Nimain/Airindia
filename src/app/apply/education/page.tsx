@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 
-const API_BASE = 'https://airindialms.solutionbriz.com/api';
+const API_BASE = 'http://localhost:8000/api';
 
 const MRO_CERTS = [
   'AME Part 66',
@@ -93,7 +93,7 @@ export default function EducationPage() {
     <div style={{ minHeight: '100vh', background: '#F5F7FA' }}>
       <Navbar />
 
-      <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 24px', display: 'grid', gridTemplateColumns: '280px 1fr', gap: '32px' }}>
+      <main className="rsp-edu-main" style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 24px', display: 'grid', gridTemplateColumns: '280px 1fr', gap: '32px' }}>
         {/* Left Sidebar */}
         <div className="animate-slideIn">
           <div style={{ marginBottom: '24px' }}>
@@ -167,7 +167,7 @@ export default function EducationPage() {
               <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#1A2B6D', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span>🎓</span> Academic Background
               </h2>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+              <div className="rsp-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                 <div>
                   <label className="form-label">Highest Qualification</label>
                   <select
@@ -215,7 +215,7 @@ export default function EducationPage() {
               <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#1A2B6D', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span>✈️</span> Aviation Experience
               </h2>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+              <div className="rsp-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                 {/* Flight Hours Card */}
                 <div className="card" style={{ padding: '20px', cursor: 'pointer', border: hasFlightHours ? '2px solid #1A2B6D' : '1px solid #E2E8F0' }}
                   onClick={() => setHasFlightHours(!hasFlightHours)}>

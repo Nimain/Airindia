@@ -3,7 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '../components/Navbar';
 
-const API_BASE = 'https://airindialms.solutionbriz.com/api';
+const API_BASE = 'http://localhost:8000/api';
 
 interface Document {
   doc_type: string;
@@ -88,7 +88,7 @@ function StatusContent() {
         {/* Search */}
         <div className="card animate-fadeInUp" style={{ padding: '32px', marginBottom: '28px', animationDelay: '0.1s' }}>
           <label className="form-label">Student ID</label>
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div className="rsp-search-row" style={{ display: 'flex', gap: '12px' }}>
             <input
               id="status-search-input"
               className="form-input"
@@ -132,7 +132,7 @@ function StatusContent() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
+              <div className="rsp-stats-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
                 {[
                   { label: 'Stream', value: status.stream === 'PILOT_CADET' ? '✈ Pilot Cadet' : '🔧 Tech MRO' },
                   { label: 'Step Completed', value: `${status.step_completed} / 3` },
