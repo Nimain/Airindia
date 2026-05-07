@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://airindialms.solutionbriz.com/api';
 
 type DocStatus = 'uploaded' | 'pending' | 'error';
 

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://airindialms.solutionbriz.com/api';
 
 export default function ApplyPage() {
   const router = useRouter();
@@ -60,7 +60,7 @@ export default function ApplyPage() {
         {/* Header */}
         <div style={{ marginBottom: '32px' }} className="animate-fadeInUp">
           <span style={{ color: '#C8102E', fontSize: '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-            Maharaja&apos;s Choice
+            Airindia&apos;s Aviation
           </span>
           <h1 style={{ fontSize: '38px', fontWeight: 900, color: '#1A2B6D', margin: '8px 0 10px' }}>
             Cadet Pilot Program Admission
@@ -396,7 +396,7 @@ export default function ApplyPage() {
               fontSize: '36px', fontWeight: 900, color: '#1A2B6D',
               lineHeight: 1.15, marginBottom: '16px'
             }}>
-              Elevate your ambitions<br />with the Maharaja.
+              Elevate your ambitions<br />with the Airindia Aviation
             </h2>
 
             <p style={{ color: '#64748B', fontSize: '15px', lineHeight: 1.7, marginBottom: '28px' }}>

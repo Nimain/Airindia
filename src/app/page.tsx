@@ -21,7 +21,7 @@ export default function Home() {
             borderRadius: '20px',
             marginBottom: '20px'
           }}>
-            ✦ Maharaja&apos;s Choice
+            ✦ Airindia&apos; Aviation
           </span>
           <h1 style={{ fontSize: '54px', fontWeight: 900, color: '#1A2B6D', lineHeight: 1.1, marginBottom: '20px' }}>
             Cadet Pilot Program<br />

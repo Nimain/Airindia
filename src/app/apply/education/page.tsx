@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://airindialms.solutionbriz.com/api';
 
 const MRO_CERTS = [
   'AME Part 66',

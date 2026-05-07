@@ -3,7 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '../components/Navbar';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://airindialms.solutionbriz.com/api';
 
 interface Document {
   doc_type: string;
@@ -42,7 +42,7 @@ function StatusContent() {
       setIdInput(idFromQuery);
       fetchStatus(idFromQuery);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchStatus = async (id: string) => {
